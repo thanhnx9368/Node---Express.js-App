@@ -6,8 +6,11 @@ const port = 3000
 
 const app = express()
 
+app.use(express.static(path.join(__dirname, 'public')))
+
 // HTTP logger
 app.use(morgan('combined'))
+
 
 // Template engine
 app.engine('hbs', handlebars({
