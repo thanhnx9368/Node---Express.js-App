@@ -1,7 +1,7 @@
 const newsRouter = require('./news')
 
-		function route(app   ) {
-	   app.use('/news', newsRouter)
+function route(app) {
+  app.use('/news', newsRouter)
 }
 
-  module.exports = route
+module.exports = route
