@@ -38,6 +38,28 @@ class CourseController {
       )
       .catch(next)
   }
+
+  edit(req, res, next) {
+    Course.findById(req.params.id)
+      .then((course) => {
+        res.render('modules/course/edit', {
+          course: mongooseToObject(course),
+        })
+      })
+      .catch(next)
+  }
+
+  update(req, res, next) {
+    Course.updateOne({ _id: req.params.id }, req.body)
+      .then((sucess) => res.redirect('/'))
+      .catch(next)
+  }
+
+  delete(req, res, next) {
+    Course.delete({ _id: req.params.id })
+      .then((sucess) => res.redirect('/'))
+      .catch(next)
+  }
 }
 
 module.exports = new CourseController()

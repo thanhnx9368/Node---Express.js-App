@@ -2,7 +2,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8 mt-4">
             <h2>Cập nhật khoá học</h2>
-            <form method="POST" action="/me/stored/courses/{{ course._id }}?_method=PUT">
+            <form method="POST" action="/courses/{{ course._id }}?_method=PUT">
                 <div class="form-group">
                     <label for="course-name">Tên khoá học</label>
                     <input type="text" class="form-control" value="{{ course.name }}" id="course-name" name="name"
@@ -17,7 +17,7 @@
                 <div class="form-group">
                     <label for="description">Mô tả ngắn</label>
                     <textarea name="description" class="form-control" id="description" rows="3">
-                        {{ course.description }}
+                        {{course.description}}
                     </textarea>
                 </div>
                 <button class="btn btn-primary">Lưu lại</button>
