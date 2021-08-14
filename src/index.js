@@ -5,6 +5,10 @@ const handlebars = require('express-handlebars')
 const route = require('./routes/index')
 const port = 3000
 const app = express()
+const methodOverride = require('method-override')
+
+// Method override
+app.use(methodOverride('_method'))
 
 // Connect to DB
 const db = require('./config/db')

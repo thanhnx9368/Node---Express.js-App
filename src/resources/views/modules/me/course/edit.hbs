@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 mt-4">
+            <h2>Cập nhật khoá học</h2>
+            <form method="POST" action="/me/stored/courses/{{ course._id }}?_method=PUT">
+                <div class="form-group">
+                    <label for="course-name">Tên khoá học</label>
+                    <input type="text" class="form-control" value="{{ course.name }}" id="course-name" name="name"
+                        placeholder="Nhập tên khoá học">
+                </div>
+                <div class="form-group">
+                    <label for="video-id">Video ID</label>
+                    <input type="text" class="form-control" value="{{ course.videoId }}" id="video-id" name="videoId"
+                        placeholder="Video Youtube ID">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Mô tả ngắn</label>
+                    <textarea name="description" class="form-control" id="description" rows="3">
+                        {{ course.description }}
+                    </textarea>
+                </div>
+                <button class="btn btn-primary">Lưu lại</button>
+            </form>
+        </div>
+
+    </div>
+</div>

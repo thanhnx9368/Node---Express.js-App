@@ -1,4 +1,7 @@
-const { multipleMongooseToObject } = require('../../utils/mongoose')
+const {
+  multipleMongooseToObject,
+  mongooseToObject,
+} = require('../../utils/mongoose')
 
 const Course = require('../models/Course')
 class meController {
@@ -9,6 +12,22 @@ class meController {
           courses: multipleMongooseToObject(courses),
         })
       })
+      .catch(next)
+  }
+
+  edit(req, res, next) {
+    Course.findById(req.params.id)
+      .then((course) => {
+        res.render('modules/me/course/edit', {
+          course: mongooseToObject(course),
+        })
+      })
+      .catch(next)
+  }
+
+  update(req, res, next) {
+    Course.updateOne({ _id: req.params.id }, req.body)
+      .then((sucess) => res.redirect('/'))
       .catch(next)
   }
 }
