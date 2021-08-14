@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <h2>Thông tin khoá học</h2>
+            <div class="course-detail">
+                Trình độ khoá học: Sơ cấp
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h2>{{ course.name }}</h2>
+            <p>{{ course.description }}</p>
+            <div class="mt-4">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ course.videoId }}"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
