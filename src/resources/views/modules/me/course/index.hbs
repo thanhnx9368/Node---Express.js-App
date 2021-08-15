@@ -1,34 +1,62 @@
 <div class="container mt-4">
-    <h1 class="text-center">Khoá học của tôi</h1>
-    <a class="d-block text-right" href="/me/stored/courses/trash">Thùng rác ({{ countDocumentDeleted }})</a>
-    <table class="table table-striped mt-4">
-        <thead>
-            <tr>
-                <th scope="col">STT</th>
-                <th scope="col">Tên</th>
-                <th scope="col">Mô tả ngắn</th>
-                <th scope="col text-center" colspan="2">Action</th>
-            </tr>
-        </thead>
-        <tbody>
+    <form method="POST" action="/courses/handle-form-action">
+        <h1 class="text-center">Khoá học của tôi</h1>
+        <a class="d-block text-right" href="/me/stored/courses/trash">Thùng rác ({{ countDocumentDeleted }})</a>
 
-            {{#each courses}}
-            <tr>
-                <th scope="row">{{ sum @index 1 }}</th>
-                <td>{{ this.name }}</td>
-                <td>{{ this.description }}</td>
-                <td>
-                    <a href="/courses/{{ this._id }}/edit">Sửa</a>
-                </td>
-                <td>
-                    <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-delete-course"
-                        data-id="{{ this._id }}" class="btn-delete-course">Xoá</a>
-                </td>
-            </tr>
-            {{/each }}
-        </tbody>
-    </table>
+        <div class="actions">
+            <div class="form d-flex align-items-center justify-items-center">
+
+                <select class="custom-select select-action w-25 mr-4" name="action" required="required">
+                    <option selected value="">-- Hành động --</option>
+                    <option value="delete">Xoá</option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-action">Thực hiện</button>
+            </div>
+        </div>
+        <table class="table table-striped mt-4">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <div class="form-check d-flex flex-column">
+                            <input class="form-check-input" type="checkbox" value="" id="inputCheckedAll">
+                            <label class="form-check-label" for="inputCheckedAll">
+                                All
+                            </label>
+                        </div>
+                    </th>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Mô tả ngắn</th>
+                    <th scope="col text-center" colspan="2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {{#each courses}}
+                <tr>
+                    <th scope="row">
+                        <div class="form-check">
+                            <input class="form-check-input input-check w-100" name="courseIds[]" type="checkbox"
+                                value="{{ this._id }}">
+                        </div>
+                    </th>
+                    <td>{{ sum @index 1 }}</td>
+                    <td>{{ this.name }}</td>
+                    <td>{{ this.description }}</td>
+                    <td>
+                        <a href="/courses/{{ this._id }}/edit">Sửa</a>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-delete-course"
+                            data-id="{{ this._id }}" class="btn-delete-course">Xoá</a>
+                    </td>
+                </tr>
+                {{/each }}
+            </tbody>
+        </table>
+    </form>
 </div>
+
 
 <div class="modal fade" id="modal-delete-course" tabindex="-1" role="dialog" aria-labelledby="modal-delete-courseLabel"
     aria-hidden="true">
@@ -53,12 +81,18 @@
     </div>
 </div>
 
+
+
 <script>
 
     window.addEventListener('DOMContentLoaded', (event) => {
         let id
         const btnDelete = $('.btn-delete-course')
         const formConfirmDelete = $('#form-confirm-delete')
+        const inputCheckAll = $('#inputCheckedAll')
+        const inputCheckItem = $('input[name="courseIds[]"]')
+        const inputSelect = $('.select-action')
+        const btnAction = $('.btn-action')
 
         btnDelete.click(function (e) {
             e.preventDefault()
@@ -67,11 +101,45 @@
             formConfirmDelete.attr('action', action);
         })
 
-
         formConfirmDelete.submit(function (e) {
-            console.log(id, 'haha 123')
 
         });
+
+        inputCheckAll.change(function (e) {
+            const isChecked = $(this).prop('checked')
+            inputCheckItem.prop('checked', isChecked)
+            checkStatusButton()
+        })
+
+        inputCheckItem.change(function (e) {
+            const lengthInputCheckItem = inputCheckItem.length
+            const lengtInputCheckItemChecked = $('input[name="courseIds[]"]:checked').length
+
+            if (lengthInputCheckItem == lengtInputCheckItemChecked) {
+                inputCheckAll.prop('checked', true)
+            } else {
+                inputCheckAll.prop('checked', false)
+            }
+            checkStatusButton()
+        })
+
+        inputSelect.change(function (e) {
+            checkStatusButton()
+        })
+
+        function checkStatusButton() {
+            const selectValue = $('.select-action option:selected').val()
+            const lengtInputCheckItemChecked = $('input[name="courseIds[]"]:checked').length
+            const isActive = lengtInputCheckItemChecked > 0 && selectValue
+            if (!isActive) {
+                btnAction.attr('disabled', true)
+            } else {
+                btnAction.attr('disabled', false)
+            }
+
+        }
+        checkStatusButton()
+
 
     });
 
