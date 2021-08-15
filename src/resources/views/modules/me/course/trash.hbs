@@ -1,6 +1,6 @@
 <div class="container mt-4">
-    <h1 class="text-center">Khoá học của tôi</h1>
-    <a class="d-block text-right" href="/me/stored/courses/trash">Thùng rác ({{ countDocumentDeleted }})</a>
+    <h1 class="text-center">Danh sách khoá học đã xoá</h1>
+    <a class="d-block text-left" href="/me/stored/courses">Quay lại danh sách khoá học</a>
     <table class="table table-striped mt-4">
         <thead>
             <tr>
@@ -18,10 +18,10 @@
                 <td>{{ this.name }}</td>
                 <td>{{ this.description }}</td>
                 <td>
-                    <a href="/courses/{{ this._id }}/edit">Sửa</a>
+                    <a href="javascript:void(0)" class="btn-restore" data-id="{{ this._id }}">Khôi phục</a>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-delete-course"
+                    <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-force-delete-course"
                         data-id="{{ this._id }}" class="btn-delete-course">Xoá</a>
                 </td>
             </tr>
@@ -30,23 +30,24 @@
     </table>
 </div>
 
-<div class="modal fade" id="modal-delete-course" tabindex="-1" role="dialog" aria-labelledby="modal-delete-courseLabel"
-    aria-hidden="true">
+<div class="modal fade" id="modal-force-delete-course" tabindex="-1" role="dialog"
+    aria-labelledby="modal-force-delete-course" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Xoá khoá học</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Xác nhận xoá khoá học</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                Dữ liệu sẽ không thể khôi phục.
                 Bạn có chắc chắn muốn xoá khoá học này?
             </div>
             <div class="modal-footer">
                 <form method="POST" id="form-confirm-delete">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
-                    <button type="submit" class="btn btn-danger">Xoá</button>
+                    <button type="submit" class="btn btn-danger">Xoá vĩnh viễn</button>
                 </form>
             </div>
         </div>
@@ -58,18 +59,28 @@
     window.addEventListener('DOMContentLoaded', (event) => {
         let id
         const btnDelete = $('.btn-delete-course')
+        const btnRestore = $('.btn-restore')
         const formConfirmDelete = $('#form-confirm-delete')
+
+
+        btnRestore.click(function (e) {
+            e.preventDefault
+            let idRestore = $(this).data('id')
+            const action = `/courses/${idRestore}/restore?_method=PATCH`
+            formConfirmDelete.attr('action', action);
+
+            formConfirmDelete.submit()
+        })
 
         btnDelete.click(function (e) {
             e.preventDefault()
             id = $(this).data('id')
-            const action = `/courses/${id}?_method=DELETE`
+            const action = `/courses/${id}/force?_method=DELETE`
             formConfirmDelete.attr('action', action);
         })
 
 
         formConfirmDelete.submit(function (e) {
-            console.log(id, 'haha 123')
 
         });
 

@@ -5,16 +5,6 @@ const {
 
 const Course = require('../models/Course')
 class CourseController {
-  // index(req, res, next) {
-
-  //   Course.find({})
-  //     .then((courses) => {
-  //         res.render('home', {
-  //         courses: multipleMongooseToObject(courses)
-  //       })
-  //     }).catch(next)
-  // }
-
   create(req, res, next) {
     res.render('modules/course/create')
   }
@@ -51,13 +41,25 @@ class CourseController {
 
   update(req, res, next) {
     Course.updateOne({ _id: req.params.id }, req.body)
-      .then((sucess) => res.redirect('/'))
+      .then((sucess) => res.redirect('modules/me/course/index'))
       .catch(next)
   }
 
   delete(req, res, next) {
     Course.delete({ _id: req.params.id })
-      .then((sucess) => res.redirect('/'))
+      .then((sucess) => res.redirect('back'))
+      .catch(next)
+  }
+
+  restore(req, res, next) {
+    Course.restore({ _id: req.params.id })
+      .then(() => res.redirect('back'))
+      .catch(next)
+  }
+
+  forceDestroy(req, res, next) {
+    Course.deleteOne({ _id: req.params.id })
+      .then(() => res.redirect('back'))
       .catch(next)
   }
 }
