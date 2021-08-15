@@ -65,11 +65,21 @@ class CourseController {
 
   handleFormAction(req, res, next) {
     const { action, courseIds } = req.body
-    console.log(action, 'action')
     switch (action) {
       case 'delete':
         Course.delete({ _id: { $in: courseIds } })
-          .then(() => res.redirect('/me/stored/courses'))
+          .then(() => res.redirect('back'))
+          .catch(next)
+        break
+      case 'restore':
+        Course.restore({ _id: { $in: courseIds } })
+          .then(() => res.redirect('back'))
+          .catch(next)
+        break
+      case 'force-delete':
+        const transformCourseIds = courseIds.split(',')
+        Course.deleteMany({ _id: { $in: transformCourseIds } })
+          .then(() => res.redirect('back'))
           .catch(next)
         break
       default:

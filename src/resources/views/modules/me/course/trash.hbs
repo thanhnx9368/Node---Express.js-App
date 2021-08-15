@@ -1,33 +1,69 @@
-<div class="container mt-4">
-    <h1 class="text-center">Danh sách khoá học đã xoá</h1>
-    <a class="d-block text-left" href="/me/stored/courses">Quay lại danh sách khoá học</a>
-    <table class="table table-striped mt-4">
-        <thead>
-            <tr>
-                <th scope="col">STT</th>
-                <th scope="col">Tên</th>
-                <th scope="col">Mô tả ngắn</th>
-                <th scope="col text-center" colspan="2">Action</th>
-            </tr>
-        </thead>
-        <tbody>
+<style>
+    .btn-action.disabled {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+</style>
 
-            {{#each courses}}
-            <tr>
-                <th scope="row">{{ sum @index 1 }}</th>
-                <td>{{ this.name }}</td>
-                <td>{{ this.description }}</td>
-                <td>
-                    <a href="javascript:void(0)" class="btn-restore" data-id="{{ this._id }}">Khôi phục</a>
-                </td>
-                <td>
-                    <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-force-delete-course"
-                        data-id="{{ this._id }}" class="btn-delete-course">Xoá</a>
-                </td>
-            </tr>
-            {{/each }}
-        </tbody>
-    </table>
+<div class="container mt-4">
+    <form method="POST" class="form-action" action="/courses/handle-form-action">
+
+        <h1 class="text-center">Danh sách khoá học đã xoá</h1>
+        <a class="d-block text-left" href="/me/stored/courses">Quay lại danh sách khoá học</a>
+
+        <div class="actions mt-4">
+            <div class="form d-flex align-items-center justify-items-center">
+
+                <select class="custom-select select-action w-25 mr-4" name="action" required="required">
+                    <option selected value="">-- Hành động --</option>
+                    <option value="restore">Khôi phục</option>
+                    <option value="force-delete">Xoá vĩnh viễn</option>
+                </select>
+                <a href="javascript:void(0)" class="btn btn-primary btn-action">Thực hiện</a>
+            </div>
+        </div>
+        <table class="table table-striped mt-2">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <div class="form-check d-flex flex-column">
+                            <input class="form-check-input" type="checkbox" value="" id="inputCheckedAll">
+                            <label class="form-check-label" for="inputCheckedAll">
+                                All
+                            </label>
+                        </div>
+                    </th>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Mô tả ngắn</th>
+                    <th scope="col text-center" colspan="2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {{#each courses}}
+                <tr>
+                    <th scope="row">
+                        <div class="form-check">
+                            <input class="form-check-input input-check w-100" name="courseIds[]" type="checkbox"
+                                value="{{ this._id }}">
+                        </div>
+                    </th>
+                    <th scope="row">{{ sum @index 1 }}</th>
+                    <td>{{ this.name }}</td>
+                    <td>{{ this.description }}</td>
+                    <td>
+                        <a href="javascript:void(0)" class="btn-restore" data-id="{{ this._id }}">Khôi phục</a>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-force-delete-course"
+                            data-id="{{ this._id }}" class="btn-delete-course">Xoá</a>
+                    </td>
+                </tr>
+                {{/each }}
+            </tbody>
+        </table>
+    </form>
 </div>
 
 <div class="modal fade" id="modal-force-delete-course" tabindex="-1" role="dialog"
@@ -48,6 +84,8 @@
                 <form method="POST" id="form-confirm-delete">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
                     <button type="submit" class="btn btn-danger">Xoá vĩnh viễn</button>
+                    <input type="hidden" name="action" class="action" value="">
+                    <input type="hidden" name="courseIds" class="course-ids">
                 </form>
             </div>
         </div>
@@ -61,6 +99,11 @@
         const btnDelete = $('.btn-delete-course')
         const btnRestore = $('.btn-restore')
         const formConfirmDelete = $('#form-confirm-delete')
+        const inputCheckAll = $('#inputCheckedAll')
+        const inputCheckItem = $('.input-check')
+        const inputSelect = $('.select-action')
+        const btnAction = $('.btn-action')
+        const formAction = $('.form-action')
 
 
         btnRestore.click(function (e) {
@@ -83,6 +126,67 @@
         formConfirmDelete.submit(function (e) {
 
         });
+
+        inputCheckAll.change(function (e) {
+            const isChecked = $(this).prop('checked')
+            inputCheckItem.prop('checked', isChecked)
+            checkStatusButton()
+        })
+
+        inputCheckItem.change(function (e) {
+            const lengthInputCheckItem = inputCheckItem.length
+            const lengtInputCheckItemChecked = $('.input-check:checked').length
+
+            if (lengthInputCheckItem == lengtInputCheckItemChecked) {
+                inputCheckAll.prop('checked', true)
+            } else {
+                inputCheckAll.prop('checked', false)
+            }
+            checkStatusButton()
+        })
+
+        inputSelect.change(function (e) {
+            checkStatusButton()
+        })
+
+        function checkStatusButton() {
+            const selectValue = $('.select-action option:selected').val()
+            const lengtInputCheckItemChecked = $('.input-check:checked').length
+            const isActive = lengtInputCheckItemChecked > 0 && selectValue
+            if (!isActive) {
+                btnAction.addClass('disabled')
+            } else {
+                btnAction.removeClass('disabled')
+            }
+
+        }
+        checkStatusButton()
+
+
+        function getCourseIdsChecked() {
+            let ids = []
+            let listChecked = $('.input-check:checked')
+            listChecked.each(function () {
+                ids.push($(this).val());
+            });
+            console.log(ids, 'ids')
+            return ids
+        }
+
+        btnAction.click(function (e) {
+            const selectValue = $('.select-action option:selected').val()
+
+            if (selectValue !== 'force-delete') {
+                formAction.submit()
+            } else {
+                $('#modal-force-delete-course').modal()
+                const action = `/courses/handle-form-action`
+                formConfirmDelete.attr('action', action);
+                formConfirmDelete.find('.action').val('force-delete')
+                formConfirmDelete.find('.course-ids').val(getCourseIdsChecked())
+                e.preventDefault()
+            }
+        })
 
     });
 
