@@ -34,8 +34,18 @@
                         </div>
                     </th>
                     <th scope="col">STT</th>
-                    <th scope="col">Tên</th>
-                    <th scope="col">Mô tả ngắn</th>
+                    <th scope="col">
+                        Tên
+                        {{{ sortable 'name' _sort }}}
+                    </th>
+                    <th scope="col">
+                        Mô tả ngắn
+                        {{{ sortable 'description' _sort }}}
+                    </th>
+                    <th scope="col">
+                        Xoá ngày
+                        {{{ sortable 'deletedAt' _sort }}}
+                    </th>
                     <th scope="col text-center" colspan="2">Action</th>
                 </tr>
             </thead>
@@ -49,9 +59,10 @@
                                 value="{{ this._id }}">
                         </div>
                     </th>
-                    <th scope="row">{{ sum @index 1 }}</th>
+                    <td>{{ sum @index 1 }}</td>
                     <td>{{ this.name }}</td>
                     <td>{{ this.description }}</td>
+                    <td>{{ this.deletedAt }}</td>
                     <td>
                         <a href="javascript:void(0)" class="btn-restore" data-id="{{ this._id }}">Khôi phục</a>
                     </td>

@@ -6,7 +6,12 @@ const {
 const Course = require('../models/Course')
 class meController {
   index(req, res, next) {
-    Promise.all([Course.find({}), Course.countDocumentsDeleted()]).then(
+    const { column, type, enabled } = res.locals._sort
+    const courseQuery = !enabled
+      ? Course.find({})
+      : Course.find({}).sort({ [column]: type })
+
+    Promise.all([courseQuery, Course.countDocumentsDeleted()]).then(
       ([courses, countDocumentDeleted]) => {
         res.render('modules/me/course', {
           courses: multipleMongooseToObject(courses),
@@ -17,7 +22,11 @@ class meController {
   }
 
   trash(req, res, next) {
-    Course.findDeleted({}).then((courses) => {
+    const { column, type, enabled } = res.locals._sort
+    const courseQuery = !enabled
+      ? Course.findDeleted({})
+      : Course.findDeleted({}).sort({ [column]: type })
+    courseQuery.then((courses) => {
       res.render('modules/me/course/trash', {
         courses: multipleMongooseToObject(courses),
       })

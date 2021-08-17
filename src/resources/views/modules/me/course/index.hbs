@@ -2,7 +2,6 @@
     <form method="POST" action="/courses/handle-form-action">
         <h1 class="text-center">Khoá học của tôi</h1>
         <a class="d-block text-right" href="/me/stored/courses/trash">Thùng rác ({{ countDocumentDeleted }})</a>
-
         <div class="actions">
             <div class="form d-flex align-items-center justify-items-center">
 
@@ -25,8 +24,18 @@
                         </div>
                     </th>
                     <th scope="col">STT</th>
-                    <th scope="col">Tên</th>
-                    <th scope="col">Mô tả ngắn</th>
+                    <th scope="col">Tên
+                        {{{ sortable 'name' _sort }}}
+                    </th>
+                    <th scope="col">
+                        Mô tả ngắn
+                        {{{ sortable 'description' _sort }}}
+                    </th>
+                    <th scope="col">
+                        Tạo ngày
+                        {{{ sortable 'createdAt' _sort }}}
+
+                    </th>
                     <th scope="col text-center" colspan="2">Action</th>
                 </tr>
             </thead>
@@ -43,6 +52,7 @@
                     <td>{{ sum @index 1 }}</td>
                     <td>{{ this.name }}</td>
                     <td>{{ this.description }}</td>
+                    <td>{{ this.createdAt }}</td>
                     <td>
                         <a href="/courses/{{ this._id }}/edit">Sửa</a>
                     </td>
