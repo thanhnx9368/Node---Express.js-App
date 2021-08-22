@@ -9,7 +9,8 @@ const Course = new Schema(
     description: { type: String, maxLength: 600 },
     image: { type: String },
     slug: { type: String, slug: 'name', unique: true },
-    videoId: { type: String },
+    videoId: { type: String, required: true },
+    owner: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   {
     timestamps: true,
