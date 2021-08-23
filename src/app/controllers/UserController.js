@@ -62,21 +62,22 @@ class UserController {
     try {
       const { userId } = req.params
       const user = await User.findOne({ _id: userId })
+
       const payload = {
         ...req.body,
         image: `http://img.youtube.com/vi/${req.body.videoId}/hqdefault.jpg`,
       }
       const course = new Course(payload)
-      course.owner = user
+      course.owner = user._id
       await course.save()
-      // console.log(course, 'course')
+
       user.courses.push(course)
-
-      console.log(user, 'user')
-
       await user.save()
+
       res.status(201).json({ course })
-    } catch (next) {}
+    } catch (err) {
+      next(next)
+    }
   }
 
   async getUserCourse(req, res, next) {

@@ -46,7 +46,6 @@ app.set('views', path.join(__dirname, 'resources', 'views'))
 route(app)
 
 // Catch 404 error and forward to the error handler
-
 app.use((req, res, next) => {
   const err = new Error('Not found')
   err.status = 404
@@ -55,14 +54,18 @@ app.use((req, res, next) => {
 
 // Error handler function
 app.use((err, req, res, next) => {
+  // const error = app.get('env') == 'development' ? err : {}
   const error = app.get('env') == 'development' ? err : {}
   const status = err.status || 500
 
   return res.status(status).json({
     error: {
-      message: res.message,
+      message: error.message,
     },
   })
 })
 
-app.listen(port, () => console.log(` http://localhost:${port}`))
+// Start the server
+app.listen(port, () =>
+  console.log(`Server is listening on: http://localhost:${port}`),
+)

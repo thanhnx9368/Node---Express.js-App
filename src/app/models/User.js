@@ -6,8 +6,9 @@ const User = new Schema(
   {
     firstName: { type: String, maxLength: 255 },
     lastName: { type: String, maxLength: 600 },
-    email: { type: String },
+    email: { type: String, required: true, unique: true },
     password: { type: String },
+    repeat_password: { type: String },
     courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   },
   {
