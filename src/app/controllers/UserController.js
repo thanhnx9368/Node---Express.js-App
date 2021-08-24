@@ -1,4 +1,6 @@
 const { multipleMongooseToObject } = require('../../utils/mongoose')
+const { createToken } = require('../../utils/jwt')
+const bcrypt = require('bcryptjs')
 
 const User = require('../models/User')
 const Course = require('../models/Course')
@@ -95,6 +97,41 @@ class UserController {
     } catch (err) {
       next(err)
     }
+  }
+
+  async signUp(req, res, next) {
+    try {
+      const { email, password } = req.body
+      const user = await User.findOne({ email })
+      if (user)
+        return res
+          .status(403)
+          .json({ error: { message: 'Email already exist!!' } })
+
+      delete req.body.repeat_password
+      const newUser = new User(req.body)
+      await newUser.save()
+      const token = createToken(newUser._id)
+
+      res.setHeader('Authorization', token)
+      res.status(201).json({ success: true })
+    } catch (err) {}
+  }
+
+  async signIn(req, res, next) {
+    try {
+      const { _id } = req.user
+      console.log(_id, '_id')
+      const token = createToken(_id)
+      res.setHeader('Authorization', token)
+      res.status(200).json({ success: true })
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async verify(req, res, next) {
+    res.send('verify!!!')
   }
 }
 
