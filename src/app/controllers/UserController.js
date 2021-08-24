@@ -121,7 +121,6 @@ class UserController {
   async signIn(req, res, next) {
     try {
       const { _id } = req.user
-      console.log(_id, '_id')
       const token = createToken(_id)
       res.setHeader('Authorization', token)
       res.status(200).json({ success: true })
@@ -131,7 +130,13 @@ class UserController {
   }
 
   async verify(req, res, next) {
-    res.send('verify!!!')
+    res.status(200).json({ success: true })
+  }
+
+  async googleAuth(req, res, next) {
+    const token = createToken(req.user._id)
+    res.setHeader('Authorization', token)
+    res.status(200).json({ success: true })
   }
 }
 

@@ -9,6 +9,13 @@ const User = new Schema(
     lastName: { type: String, maxLength: 600 },
     email: { type: String, required: true, unique: true, lowcase: true },
     password: { type: String },
+    authType: {
+      type: String,
+      enum: ['local', 'facebook', 'google'],
+      default: 'local',
+    },
+    googleId: { type: String },
+    facebookId: { type: String },
     courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   },
   {
@@ -18,6 +25,9 @@ const User = new Schema(
 
 User.pre('save', async function (next) {
   try {
+    if (this.authType != 'local') {
+      return next()
+    }
     const salt = bcrypt.genSaltSync(10)
     const passwordHash = bcrypt.hashSync(this.password, salt)
     this.password = passwordHash

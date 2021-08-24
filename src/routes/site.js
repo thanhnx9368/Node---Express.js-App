@@ -21,4 +21,19 @@ router.post(
   UserController.verify,
 )
 
+// Google OAuth2
+router.post(
+  '/auth/google/token',
+  passport.authenticate('google-token', { session: false }),
+  UserController.googleAuth,
+)
+
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/auth/google/success',
+    failureRedirect: '/auth/google/failure',
+  }),
+)
+
 module.exports = router
