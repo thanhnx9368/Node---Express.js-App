@@ -1,12 +1,14 @@
-const path = require('path')
+// Config env
+require('dotenv').config()
+
 const express = require('express')
 const morgan = require('morgan')
 const handlebars = require('express-handlebars')
 const route = require('./routes/index')
-const port = 3000
 const app = express()
+const port = 3000
+const path = require('path')
 const methodOverride = require('method-override')
-const softMiddleware = require('./app/middlewares/softMiddleware')
 
 // Method override
 app.use(methodOverride('_method'))
@@ -29,6 +31,7 @@ app.use(express.json())
 app.use(morgan('combined'))
 
 // Custom middlewares
+const softMiddleware = require('./app/middlewares/softMiddleware')
 app.use(softMiddleware)
 
 // Template engine
@@ -64,9 +67,6 @@ app.use((err, req, res, next) => {
     },
   })
 })
-
-// Implement env
-require('dotenv').config()
 
 // Start the server
 app.listen(port, () =>
