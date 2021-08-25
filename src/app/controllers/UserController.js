@@ -134,9 +134,24 @@ class UserController {
   }
 
   async googleAuth(req, res, next) {
-    const token = createToken(req.user._id)
-    res.setHeader('Authorization', token)
-    res.status(200).json({ success: true })
+    try {
+      const token = createToken(req.user._id)
+      res.setHeader('Authorization', token)
+      res.status(200).json({ success: true })
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async facebookAuth(req, res, next) {
+    try {
+      const token = createToken(req.user._id)
+      console.log(token, 'hiii')
+      res.setHeader('Authorization', token)
+      res.status(200).json({ success: true })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 

@@ -28,12 +28,11 @@ router.post(
   UserController.googleAuth,
 )
 
-router.get(
-  '/auth/google/callback',
-  passport.authenticate('google', {
-    successRedirect: '/auth/google/success',
-    failureRedirect: '/auth/google/failure',
-  }),
+// Facebook OAuth2
+router.post(
+  '/auth/facebook/token',
+  passport.authenticate('facebook-token', { session: false }),
+  UserController.facebookAuth,
 )
 
 module.exports = router

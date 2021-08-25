@@ -16,6 +16,7 @@ const User = new Schema(
     },
     googleId: { type: String },
     facebookId: { type: String },
+    image: { type: String },
     courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   },
   {
